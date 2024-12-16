@@ -19,6 +19,8 @@ def process_image(image, filter_type, level, rotation):
     elif filter_type == 'Bilateral Filter':
         # Pillow tidak mendukung Bilateral secara langsung, jadi kita gunakan GaussianBlur sebagai alternatif
         processed_img = image.filter(ImageFilter.GaussianBlur(radius=level))
+    else:
+        raise ValueError(f"Unknown filter type: {filter_type}")  # Tambahkan pengecekan error untuk filter yang tidak valid
 
     # Terapkan rotasi
     if rotation != 0:
@@ -31,7 +33,7 @@ st.sidebar.title("Navigation")
 page = st.sidebar.radio("Select a page", ["Page 1: Instructions", "Page 2: Group Members", "Page 3: Image Processing"])
 
 # Page 1: Instructions
-if page == "Page 1: Instructions":  # Perbaiki nama halaman
+if page == "Page 1: Instructions":
     st.title("Instructions")
     st.write("""
     Welcome to the Image Processing Tool!
@@ -91,21 +93,24 @@ elif page == "Page 3: Image Processing":
 
         # Tombol untuk memproses gambar
         if st.button("Process Image"):
-            processed_img = process_image(image, filter_type, level, rotation)
+            try:
+                processed_img = process_image(image, filter_type, level, rotation)
 
-            # Simpan hasil
-            result_filename = f"processed_{uploaded_file.name}"
-            result_path = os.path.join(RESULT_FOLDER, result_filename)
-            processed_img.save(result_path)
+                # Simpan hasil
+                result_filename = f"processed_{uploaded_file.name}"
+                result_path = os.path.join(RESULT_FOLDER, result_filename)
+                processed_img.save(result_path)
 
-            # Tampilkan hasil
-            st.image(processed_img, caption="Processed Image", use_container_width=True)
+                # Tampilkan hasil
+                st.image(processed_img, caption="Processed Image", use_container_width=True)
 
-            # Tombol untuk mengunduh gambar
-            with open(result_path, "rb") as file:
-                btn = st.download_button(
-                    label="Download Processed Image",
-                    data=file,
-                    file_name=result_filename,
-                    mime="image/png"
-                )
+                # Tombol untuk mengunduh gambar
+                with open(result_path, "rb") as file:
+                    st.download_button(
+                        label="Download Processed Image",
+                        data=file,
+                        file_name=result_filename,
+                        mime="image/png"
+                    )
+            except Exception as e:
+                st.error(f"An error occurred: {e}")
