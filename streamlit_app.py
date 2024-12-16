@@ -1,6 +1,7 @@
 import streamlit as st
 from PIL import Image, ImageFilter
 import os
+import time
 
 # Direktori untuk menyimpan file yang diunggah dan hasilnya
 UPLOAD_FOLDER = 'uploaded_images'
@@ -16,8 +17,8 @@ def process_image(image, filter_type, level, rotation):
     # Terapkan filter
     if filter_type == 'Median Blur':
         processed_img = image.filter(ImageFilter.MedianFilter(size=level))
-    elif filter_type == 'Bilateral Filter':
-        # Pillow tidak mendukung Bilateral secara langsung, jadi kita gunakan GaussianBlur sebagai alternatif
+    elif filter_type == 'Bilateral Filter (Gaussian Blur Alternative)':
+        # GaussianBlur digunakan sebagai alternatif Bilateral Filter
         processed_img = image.filter(ImageFilter.GaussianBlur(radius=level))
     else:
         raise ValueError(f"Unknown filter type: {filter_type}")  # Tambahkan pengecekan error untuk filter yang tidak valid
@@ -71,8 +72,11 @@ elif page == "Page 3: Image Processing":
     uploaded_file = st.file_uploader("Choose an image file", type=["jpg", "jpeg", "png"])
 
     if uploaded_file is not None:
+        # Generate unique filename to avoid overwriting
+        unique_filename = str(int(time.time())) + "_" + uploaded_file.name
+        img_path = os.path.join(UPLOAD_FOLDER, unique_filename)
+
         # Simpan file yang diunggah
-        img_path = os.path.join(UPLOAD_FOLDER, uploaded_file.name)
         with open(img_path, "wb") as f:
             f.write(uploaded_file.getbuffer())
 
@@ -97,7 +101,7 @@ elif page == "Page 3: Image Processing":
                 processed_img = process_image(image, filter_type, level, rotation)
 
                 # Simpan hasil
-                result_filename = f"processed_{uploaded_file.name}"
+                result_filename = f"processed_{unique_filename}"
                 result_path = os.path.join(RESULT_FOLDER, result_filename)
                 processed_img.save(result_path)
 
