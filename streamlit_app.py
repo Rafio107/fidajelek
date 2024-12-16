@@ -31,7 +31,7 @@ st.sidebar.title("Navigation")
 page = st.sidebar.radio("Select a page", ["Page 1: Instructions", "Page 2: Group Members", "Page 3: Image Processing"])
 
 # Page 1: Instructions
-if page == "Page 1: Instructions":
+if page == "Page 1: Group Linear 2":
     st.title("Instructions")
     st.write("""
     Welcome to the Image Processing Tool!
@@ -53,11 +53,10 @@ elif page == "Page 2: Group Members":
     st.title("Group Members")
     st.write("""
     ### Meet the Team
-    1. **Alice** - Team Leader.
-    2. **Bob** - Backend Developer.
-    3. **Charlie** - Frontend Developer.
-    4. **Diana** - Tester.
-
+    1. Aldrian	004202300034
+    2. Faiqotul Mufida	004202300001
+    3. Muhammad Nova Ulin Nuha	004202300015
+   
     We are passionate about building user-friendly tools and providing innovative solutions!
     """)
 
