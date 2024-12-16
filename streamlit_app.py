@@ -10,6 +10,9 @@ os.makedirs(RESULT_FOLDER, exist_ok=True)
 
 # Fungsi untuk memproses gambar
 def process_image(image, filter_type, level, rotation):
+    # Pastikan nilai level (size) adalah bilangan ganjil
+    level = level if level % 2 == 1 else level + 1
+
     # Terapkan filter
     if filter_type == 'Median Blur':
         processed_img = image.filter(ImageFilter.MedianFilter(size=level))
@@ -40,7 +43,7 @@ if uploaded_file is not None:
     image = Image.open(img_path)
 
     # Tampilkan gambar yang diunggah
-    st.image(image, caption="Uploaded Image", use_column_width=True)
+    st.image(image, caption="Uploaded Image", use_container_width=True)
 
     # Pilihan filter
     filter_type = st.selectbox("Choose a filter", ["Median Blur", "Bilateral Filter (Gaussian Blur Alternative)"])
@@ -61,7 +64,7 @@ if uploaded_file is not None:
         processed_img.save(result_path)
 
         # Tampilkan hasil
-        st.image(processed_img, caption="Processed Image", use_column_width=True)
+        st.image(processed_img, caption="Processed Image", use_container_width=True)
 
         # Tombol untuk mengunduh gambar
         with open(result_path, "rb") as file:
